@@ -29,7 +29,7 @@ android {
 
     defaultConfig {
         applicationId = "com.sivan.blade"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -101,6 +101,9 @@ dependencies {
     testImplementation(libs.hilt.android.testing)
     kaptTest(libs.hilt.android.compiler)
 
+    //Permissions
+    implementation(libs.peko)
+
     // Arch Components
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
@@ -108,6 +111,19 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+
+    // Orbit MVI
+    implementation(libs.orbit.compose)
+    implementation (libs.orbit.viewmodel)
+
+    // ContactStore
+    implementation (libs.contactstore)
+
+    implementation (libs.contactstore.coroutines)
+
+    //Coil
+    implementation (libs.landscapist.coil)
+
 
     // Compose
     implementation(libs.androidx.compose.ui)

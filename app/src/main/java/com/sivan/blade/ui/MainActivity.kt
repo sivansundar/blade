@@ -16,7 +16,9 @@
 
 package com.sivan.blade.ui
 
+import android.Manifest
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.icons.Icons
@@ -29,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -36,10 +39,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.markodevcic.peko.PermissionRequester
+import com.markodevcic.peko.PermissionResult
 import com.sivan.blade.ui.graph.RootNavigationGraph
 import com.sivan.blade.ui.graph.RootScreen
 import dagger.hilt.android.AndroidEntryPoint
 import com.sivan.blade.ui.theme.MyApplicationTheme
+import kotlinx.coroutines.launch
 
 sealed class BottomNavigationScreens(val route: String, val title: String, val icon: ImageVector) {
     object Contacts : BottomNavigationScreens("contacts", "Contacts", Icons.Rounded.AccountBox)
@@ -51,18 +57,37 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            val navController = rememberNavController()
+        PermissionRequester.initialize(applicationContext)
+        setupPermissions()
+    }
 
-            MyApplicationTheme {
-                RootNavigationGraph(navController)
+    private fun setupPermissions() {
+        val requester = PermissionRequester.instance()
+
+        lifecycleScope.launch {
+            requester.request(
+                Manifest.permission.READ_CONTACTS,
+                Manifest.permission.WRITE_CONTACTS
+            ).collect { p ->
+                when (p) {
+                    is PermissionResult.Granted -> {
+                        setContent {
+                            val navController = rememberNavController()
+
+                            MyApplicationTheme {
+                                RootNavigationGraph(navController)
+                            }
+                        }
+                    }
+                    is PermissionResult.Denied -> Log.d("Permission", "Data : ${p.permission} denied") // denied, not interested in reason
+                    is PermissionResult.Denied.NeedsRationale -> Log.d("Permission", "Data : ${p.permission} needs rationale") // show rationale
+                    is PermissionResult.Denied.DeniedPermanently -> Log.d("Permission", "Data : ${p.permission} denied for good") // no go
+                    is PermissionResult.Cancelled -> Log.d("Permission", "Data : request cancelled") // op canceled, repeat the request
+                }
             }
         }
     }
 }
-
-
-
 
 @Composable
 fun BottomBar(navController: NavHostController) {

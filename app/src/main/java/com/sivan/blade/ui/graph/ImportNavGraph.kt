@@ -15,7 +15,10 @@ fun NavGraphBuilder.importNavGraph(navController: NavHostController) {
         startDestination = ImportScreen.Import.route
     ) {
         composable(route = ImportScreen.Import.route) {
+            val contactId =
+                it.arguments?.getString(ImportScreen.Import.CONTACT_ID) ?: ""
             ImportScreen(
+                contactId = contactId,
                 onFinishClick = {
                     navController.navigate(ImportScreen.Finish.route)
                 }
@@ -28,6 +31,9 @@ fun NavGraphBuilder.importNavGraph(navController: NavHostController) {
 }
 
 sealed class ImportScreen(val route: String) {
-    object Import : ImportScreen(route = "Import")
+    object Import : ImportScreen(route = "import/{contact_id}") {
+        val CONTACT_ID = "contact_id"
+        fun create(id: String) = "import/$id"
+    }
     object Finish : ImportScreen(route = "finish")
 }

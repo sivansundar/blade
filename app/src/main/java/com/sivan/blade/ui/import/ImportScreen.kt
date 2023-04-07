@@ -6,9 +6,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun ImportScreen(onFinishClick : () -> Unit) {
+fun ImportScreen(contactId : String, onFinishClick : () -> Unit) {
     Column {
-        Text(text = "Import")
+        Text(text = "Import : $contactId")
         Button(onClick = { onFinishClick() }) {
             Text(text = "Finish")
         }

@@ -6,14 +6,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.sivan.blade.ui.BottomBar
 import com.sivan.blade.ui.BottomNavigationScreens
 import com.sivan.blade.ui.contacts.ContactsScreen
 import com.sivan.blade.ui.Graph
 import com.sivan.blade.ui.SettingsScreen
+import com.sivan.blade.ui.graph.ImportScreen.Import.CONTACT_ID
 
 
 @Composable
@@ -52,8 +55,12 @@ fun RootNavHost(navController: NavHostController, modifier: Modifier) {
         startDestination = BottomNavigationScreens.Contacts.route
     ) {
         composable(route = BottomNavigationScreens.Contacts.route) {
-            ContactsScreen(navigateToImport = {
-                navController.navigate(Graph.IMPORT)
+            ContactsScreen(navigateToDetails = {
+                navController.navigate(
+                    ImportScreen.Import.create(
+                        it.contactId.toString()
+                    )
+                )
             })
         }
         composable(route = BottomNavigationScreens.Settings.route) {
