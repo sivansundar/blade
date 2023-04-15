@@ -3,13 +3,7 @@ package com.sivan.blade.ui.graph
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -75,7 +69,7 @@ fun RootNavHost(
         composable(route = BottomNavigationScreens.Contacts.route) {
             ContactsScreen(navigateToDetails = {
                 navController.navigate(
-                    ImportScreen.Import.create(
+                    DetailsScreen.Details.create(
                         it.contactId.toString()
                     )
                 )
@@ -85,7 +79,7 @@ fun RootNavHost(
             SettingsScreen()
         }
 
-        importNavGraph(navController = navController)
+        detailsNavGraph(navController = navController)
     }
 }
 

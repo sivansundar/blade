@@ -3,6 +3,7 @@ package com.sivan.blade.ui.contacts
 import androidx.lifecycle.ViewModel
 import com.alexstyl.contactstore.Contact
 import com.alexstyl.contactstore.ContactStore
+import com.sivan.blade.ui.contacts.details.DetailsState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
