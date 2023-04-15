@@ -17,8 +17,12 @@
 package com.sivan.blade.ui
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.icons.Icons
@@ -35,14 +39,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.markodevcic.peko.PermissionRequester
 import com.markodevcic.peko.PermissionResult
 import com.sivan.blade.ui.graph.RootNavigationGraph
-import com.sivan.blade.ui.graph.RootScreen
 import dagger.hilt.android.AndroidEntryPoint
 import com.sivan.blade.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.launch
@@ -50,6 +51,10 @@ import kotlinx.coroutines.launch
 sealed class BottomNavigationScreens(val route: String, val title: String, val icon: ImageVector) {
     object Contacts : BottomNavigationScreens("contacts", "Contacts", Icons.Rounded.AccountBox)
     object Settings : BottomNavigationScreens("settings", "Settings", Icons.Rounded.Settings)
+
+    fun existsInGraph(title: String) {
+
+    }
 }
 
 @AndroidEntryPoint
@@ -59,6 +64,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         PermissionRequester.initialize(applicationContext)
         setupPermissions()
+    }
+
+    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+        return super.onCreateView(name, context, attrs)
     }
 
     private fun setupPermissions() {
@@ -79,10 +88,23 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
-                    is PermissionResult.Denied -> Log.d("Permission", "Data : ${p.permission} denied") // denied, not interested in reason
-                    is PermissionResult.Denied.NeedsRationale -> Log.d("Permission", "Data : ${p.permission} needs rationale") // show rationale
-                    is PermissionResult.Denied.DeniedPermanently -> Log.d("Permission", "Data : ${p.permission} denied for good") // no go
-                    is PermissionResult.Cancelled -> Log.d("Permission", "Data : request cancelled") // op canceled, repeat the request
+
+                    is PermissionResult.Denied -> Log.d(
+                        "Permission",
+                        "Data : ${p.permission} denied"
+                    ) // denied, not interested in reason
+                    is PermissionResult.Denied.NeedsRationale -> Log.d(
+                        "Permission",
+                        "Data : ${p.permission} needs rationale"
+                    ) // show rationale
+                    is PermissionResult.Denied.DeniedPermanently -> Log.d(
+                        "Permission",
+                        "Data : ${p.permission} denied for good"
+                    ) // no go
+                    is PermissionResult.Cancelled -> Log.d(
+                        "Permission",
+                        "Data : request cancelled"
+                    ) // op canceled, repeat the request
                 }
             }
         }
@@ -90,19 +112,19 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun BottomBar(navController: NavHostController) {
-    val screens = listOf(
-        BottomNavigationScreens.Contacts,
-        BottomNavigationScreens.Settings
-    )
+fun BottomBar(
+    navController: NavHostController,
+    bottomNavigationItems: List<BottomNavigationScreens>
+) {
+
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    val bottomBarDestination = screens.any { it.route == currentDestination?.route }
+    val bottomBarDestination = bottomNavigationItems.any { it.route == currentDestination?.route }
     if (bottomBarDestination) {
         NavigationBar {
 
-            screens.forEach { screen ->
+            bottomNavigationItems.forEach { screen ->
                 NavigationBarItem(
                     icon = { Icon(screen.icon, contentDescription = null) },
                     label = { Text("${screen.title}") },

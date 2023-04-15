@@ -13,7 +13,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,23 +44,34 @@ fun ContactsScreen(
     })
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ContactScreen(data: List<Contact>, onItemClick: (Contact) -> Unit) {
     val lazyListState = rememberLazyListState()
-
-    LazyColumn(
-        state = lazyListState,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        items(items = data, key = { it.contactId }) {
-            ContactItem(
-                item = it,
-                onItemClick = { contact ->
-                    onItemClick(contact)
-                }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Contacts") },
             )
+        },
+        content = {
+            LazyColumn(
+                modifier = Modifier.padding(it),
+                state = lazyListState,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(items = data, key = { it.contactId }) {
+                    ContactItem(
+                        item = it,
+                        onItemClick = { contact ->
+                            onItemClick(contact)
+                        }
+                    )
+                }
+            }
         }
-    }
+    )
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
