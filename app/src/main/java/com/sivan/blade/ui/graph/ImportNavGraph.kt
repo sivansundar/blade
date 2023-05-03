@@ -8,7 +8,7 @@ import com.sivan.blade.ui.Graph
 import com.sivan.blade.ui.import.FinishScreen
 import com.sivan.blade.ui.contacts.details.DetailsScreen
 
-fun NavGraphBuilder.detailsNavGraph(
+fun NavGraphBuilder.contactsNavGraph(
     navController: NavHostController
 ) {
     // Use nav controller here for all internal navigation
@@ -23,9 +23,6 @@ fun NavGraphBuilder.detailsNavGraph(
 
             DetailsScreen(
                 contactId = contactId,
-                onFinishClick = {
-                    navController.navigate(DetailsScreen.Finish.route)
-                }
             )
 
         }

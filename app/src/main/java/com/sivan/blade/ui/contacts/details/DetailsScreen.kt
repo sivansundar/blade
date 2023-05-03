@@ -19,11 +19,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Call
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -36,16 +34,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.request.ImageRequest
 import com.alexstyl.contactstore.Contact
 import com.alexstyl.contactstore.thumbnailUri
 import com.skydoves.landscapist.InternalLandscapistApi
 import com.skydoves.landscapist.coil.CoilImage
-import com.skydoves.landscapist.rememberBitmapPainter
 import org.orbitmvi.orbit.compose.collectAsState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -54,7 +51,6 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun DetailsScreen(
     detailsViewModel: DetailsViewModel = hiltViewModel(),
     contactId: String,
-    onFinishClick: () -> Unit
 ) {
 
     LaunchedEffect(key1 = Unit) {
@@ -119,7 +115,9 @@ private fun DetailsScreen(
 @Composable
 private fun DetailsScreenContent(
     modifier: Modifier,
-    data: Contact
+    data: Contact,
+    onCallButtonClicked : (Contact) -> (Unit) = {},
+    onTextButtonClicked : (Contact) -> (Unit) = {}
 ) {
     val scrollState = rememberScrollState()
     Column(modifier = modifier.verticalScroll(scrollState)) {
@@ -145,40 +143,59 @@ private fun DetailsScreenContent(
             )
 
             Divider(
-                modifier = Modifier.padding(vertical = 32.dp),
+                modifier = Modifier.padding(top = 32.dp),
                 thickness = 2.dp,
             )
 
-            LazyRow(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                repeat(3) {
-                    item {
-                        Column(
-                            modifier = Modifier.clickable {
-
-                            }.padding(24.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Image(
-                                modifier = Modifier.size(36.dp),
-                                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
-                                imageVector = Icons.Rounded.Call,
-                                contentDescription = ""
-                            )
-                            Text(modifier = Modifier.padding(top = 8.dp), text = "Call", color = MaterialTheme.colorScheme.primary)
+                Option(
+                    modifier = Modifier
+                        .clickable {
+                            onCallButtonClicked(data)
                         }
-                    }
-                }
+                        .padding(24.dp),
+                    icon = Icons.Rounded.Call,
+                    title = "Call")
+
+                Option(
+                    modifier = Modifier
+                        .clickable {
+                            onTextButtonClicked(data)
+                        }
+                        .padding(24.dp),
+                    icon = Icons.Rounded.Call,
+                    title = "Text")
             }
             Divider(
-                modifier = Modifier.padding(vertical = 32.dp),
+                modifier = Modifier.padding(bottom = 32.dp),
                 thickness = 2.dp,
             )
         }
+    }
+}
+
+@Composable
+private fun Option(modifier: Modifier, icon: ImageVector, title: String) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            modifier = Modifier.size(24.dp),
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
+            imageVector = icon,
+            contentDescription = ""
+        )
+        Text(
+            modifier = Modifier.padding(top = 8.dp),
+            text = title,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }
 

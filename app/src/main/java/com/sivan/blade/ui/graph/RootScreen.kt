@@ -79,7 +79,7 @@ fun RootNavHost(
             SettingsScreen()
         }
 
-        detailsNavGraph(navController = navController)
+        contactsNavGraph(navController = navController)
     }
 }
 
