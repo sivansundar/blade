@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Call
+import androidx.compose.material.icons.rounded.Chat
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -167,7 +168,7 @@ private fun DetailsScreenContent(
                             onTextButtonClicked(data)
                         }
                         .padding(24.dp),
-                    icon = Icons.Rounded.Call,
+                    icon = Icons.Rounded.Chat,
                     title = "Text")
             }
             Divider(

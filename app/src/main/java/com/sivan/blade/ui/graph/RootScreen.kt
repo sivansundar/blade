@@ -76,7 +76,11 @@ fun RootNavHost(
             })
         }
         composable(route = BottomNavigationScreens.Settings.route) {
-            SettingsScreen()
+            SettingsScreen(
+                onBackPress = {
+                    navController.navigateUp()
+                }
+            )
         }
 
         contactsNavGraph(navController = navController)
